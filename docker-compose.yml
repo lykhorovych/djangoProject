@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=itvdn
+      - POSTGRES_USER=lego
+      - POSTGRES_PASSWORD=nabucom1
+
+  web:
+    build: .
+    command: sh -c "python manage.py migrate --noinput &&
+                    python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_NAME=itvdn
+      - POSTGRES_USER=lego
+      - POSTGRES_PASSWORD=nabucom1
+    depends_on:
+      - db
